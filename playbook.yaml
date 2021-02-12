@@ -1,0 +1,6 @@
+---
+- hosts: all
+#  vars:
+#    w:
+  roles:
+    - role: kotofeych.victoriametrics

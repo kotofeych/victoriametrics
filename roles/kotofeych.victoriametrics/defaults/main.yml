@@ -1,0 +1,41 @@
+##### settings prometheus.yml
+##### global settings
+# global_scrape_interval: ___ # default - "10s"
+
+##### config `traefik`
+scripe_config__traefik: true # `true` if use `traefik`
+# scripe_config__traefik__interval: ___ # default - "1s"
+# scripe_config__traefik__timeout: ___ # default - "3s"
+scripe_config__traefik__target:
+  - '172.16.1.1:8082' # array targets
+
+##### config `gitlab_runner`
+scripe_config__gitlab_runner: true # `true` if use `gitlab_runner`
+# scripe_config__gitlab_runner__interval: ___ # default - "1s"
+# scripe_config__gitlab_runner__timeout: ___ # default - "3s"
+scripe_config__gitlab_runner__target:
+  - '172.16.1.13:9252' # array targets
+
+##### config `snmp`
+scripe_config__snmp: true # `true` if use `snmp`
+# scripe_config__snmp__interval: ___ # default - "5s"
+# scripe_config__snmp__timeout: ___ # default - "5s"
+scripe_config__snmp__target:
+  - '192.168.0.1' # array targets
+  - '192.168.0.2' # array targets
+scripe_config__snmp__metrics_path: '/snmp'
+
+##### config `new scripe config`
+scripe_config__custom: |
+  - job_name: 'test1'
+    scrape_interval: 1s
+    scrape_timeout: 3s
+    static_configs:
+      - targets:
+        - '172.16.1.1:8082'
+  - job_name: 'test2'
+    scrape_interval: 1s
+    scrape_timeout: 3s
+    static_configs:
+      - targets:
+        - '172.16.1.1:8082'

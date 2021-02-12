@@ -1,0 +1,59 @@
+global:
+  scrape_interval: {{ global_scrape_interval | default("10s", true) }}
+
+scrape_configs:
+  - job_name: 'vmagent'
+    static_configs:
+      - targets: ['vmagent:8429']
+
+  - job_name: 'victoriametrics'
+    static_configs:
+      - targets: ['victoriametrics:8428']
+
+{% if scripe_config__traefik is defined and scripe_config__traefik %}
+  - job_name: 'traefik'
+    scrape_interval: {{ scripe_config__traefik__interval | default("1s", true) }}
+    scrape_timeout: {{ scripe_config__traefik__timeout | default("3s", true) }}
+    static_configs:
+      - targets:
+{% for item in scripe_config__traefik__target %}
+        - '{{ item }}'
+{% endfor %}
+{%- endif %}
+
+{% if scripe_config__gitlab_runner is defined and scripe_config__gitlab_runner %}
+  - job_name: 'gitlab_runner'
+    scrape_interval: {{ scripe_config__gitlab_runner__interval | default("1s", true) }}
+    scrape_timeout: {{ scripe_config__gitlab_runner__timeout | default("3s", true) }}
+    static_configs:
+      - targets:
+{% for item in scripe_config__gitlab_runner__target %}
+        - '{{ item }}'
+{% endfor %}
+{%- endif %}
+
+{% if scripe_config__snmp is defined and scripe_config__snmp %}
+  - job_name: 'snmp'
+    scrape_interval: {{ scripe_config__snmp__interval | default("5s", true) }}
+    scrape_timeout: {{ scripe_config__snmp__timeout | default("5s", true) }}
+    static_configs:
+      - targets:
+{% for item in scripe_config__snmp__target %}
+        - '{{ item }}'
+{% endfor %}
+    metrics_path: '{{ scripe_config__snmp__metrics_path }}'
+    params:
+      module: [mikrotik]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: snmp:9116
+{%- endif %}
+
+{% if scripe_config__custom is defined and scripe_config__custom %}
+#  {{ scripe_config__custom | to_nice_yaml | indent(4) }}
+  {{ scripe_config__custom | from_yaml | indent(4) }}
+{% endif %}

@@ -1,0 +1,9 @@
+---
+- name: Build projects `docker-compose`
+  docker_compose:
+    build: yes
+    project_src: ./roles/kotofeych.victoriametrics
+    files: docker-compose.yml
+#    project_src: ./roles/kotofeych.victoriametrics/docker-compose.yml
+  register: build_docker_compose
+
